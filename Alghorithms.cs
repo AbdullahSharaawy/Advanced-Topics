@@ -1,3 +1,5 @@
+using System.Xml.Linq;
+
 namespace Alghorithms
 {
     public class Tree<T>
@@ -116,7 +118,7 @@ namespace Alghorithms
     }
     static class InsertionSort
     {
-        public static void Sort(ref int[] arr)
+        public static void Sort( int[] arr)
         {
             for(int i = 0;i < arr.Length-1;i++)
             {
@@ -133,17 +135,85 @@ namespace Alghorithms
             }
         }
     }
+    public static class CountSort
+    {
+        public static void Sort(int[] arr,int mod=10,bool TurnOn=false)//TurnOn to use x lamda function ,if it is true
+        {
+            int K = 0;
+            int[] Count;
+            int[] Temp=new int[arr.Length];
+            int Sum;// to calculate the comulative for the Count
+            var x = (int n) => { return TurnOn ? (n % mod) / (mod / 10) : n; };
+
+            foreach (int element in arr)
+            {
+                if(x(element) > K)
+                    K = x(element);
+            }
+            
+            Count = new int[K +1] ;
+
+            foreach (int element in arr)// to calculate number of repeat for each number
+            {
+                Count[x(element)] +=1;
+            }
+            Sum = Count[0];
+
+            for(int i=1;i<Count.Length;i++)// to calculate the comulative (position)
+            {
+                Sum += Count[i];
+                Count[i] = Sum;
+            }
+            for (int i=arr.Length-1;i>=0;i--)//sort
+            {
+                int index = Count[x(arr[i])] - 1;
+                Count[x(arr[i])] -= 1;// update the comulative (position)
+                Temp[index] = arr[i];
+            }
+            for(int i=0;i<arr.Length;i++)// update arr
+            {
+                arr[i] =Temp[i];
+            }
+        }
+    }
+    public static class RadixSort
+    {
+        public static void Sort(int[] arr)
+        {
+            int MaxElement = 0;
+            int d=0;// number of call the Count Sort
+            int Mode = 10;
+            foreach (int element in arr)
+            {
+                if (element > MaxElement)
+                    MaxElement = element;
+            }
+            while(MaxElement>0)
+            {
+                d+=1;
+                MaxElement /= 10;
+            }
+            
+            while(d>0)
+            {
+               CountSort.Sort(arr,Mode,true);
+                d--;
+                Mode *= 10;
+            }
+        }
+    }
+    
     public class program
     {
         public static void Main(string[] args)
         {
-            //int[] arr = { 2, 34, 45, 3, 6, 67, 3, 76, 43, 2, 3, 4, 6 };
-            //SelectionSort.Sort(ref arr);
-            //foreach (int i in arr)
-            //    Console.WriteLine(i);
+            int[] arr = { 2, 34, 45, 3, 6, 67, 5, 76, 43, 8, 9, 1, 6 };
+            RadixSort.Sort(arr);
+            foreach (int i in arr)
+                Console.Write(i + " ");
             
             //Tree<string> Tree = new Tree<string>("Sharaawy");
-            
+
             //TreeNode<string> Child1 = new TreeNode<string>("Zaki");
             //Tree.root.Childs.Add(Child1);
             //TreeNode<string> Child2 = new TreeNode<string>("Eid");
