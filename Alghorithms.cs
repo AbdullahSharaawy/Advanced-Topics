@@ -176,6 +176,95 @@ namespace Alghorithms
             }
         }
     }
+    public static class QuickSort
+    {
+
+        private static int SortAlgo(int[] arr, int Lower, int Upper)
+        {
+            int StartIndex = Lower, EndIndex = Upper;
+            int PivotIndex = StartIndex++;
+
+            var Swap = (int x, int y) =>
+                {
+                    int temp = arr[x];
+                    arr[x] = arr[y];
+                    arr[y] = temp;
+                };
+
+                while (StartIndex <= EndIndex)
+                {
+                    while (StartIndex <= EndIndex && arr[StartIndex] <= arr[PivotIndex])
+                        StartIndex++;
+                    while (StartIndex <= EndIndex && arr[EndIndex] > arr[PivotIndex])
+                        EndIndex --;
+                    if (StartIndex <= EndIndex)
+                        Swap(StartIndex++, EndIndex--);
+                }
+            
+            Swap(PivotIndex, EndIndex);
+            
+            return EndIndex;
+        }
+        
+        public static void Sort(int[] arr,int Lower,int Upper)
+        {
+                if(Lower< Upper)
+            {
+                int _PivotIndex = SortAlgo(arr, Lower, Upper);
+                Sort(arr, Lower, _PivotIndex-1 );
+                Sort(arr, _PivotIndex+1, Upper);
+
+            }
+           
+
+        }
+    }
+    public static class MergeSort
+    {
+        private static void Sort(int[] arr, int Medium, int Lower, int Upper)
+        {
+            int Lower1 = Lower;
+            int Lower2 = Medium+1;
+            int index = 0;
+            int[] temp = new int[Upper - Lower + 1];
+            while (Lower1 <= Medium && Lower2<= Upper)
+            {
+                if (arr[Lower1] <= arr[Lower2])
+                {
+                    temp[index] = arr[Lower1];
+                    Lower1++;
+                    index++;
+                }
+                else
+                {
+                    temp[index] = arr[Lower2];
+                    Lower2++;
+                    index++;
+                }
+
+            }
+            while (Lower1 <= Medium)
+                temp[index++] = arr[Lower1++];
+
+            while (Lower2 <= Upper)
+                temp[index++] = arr[Lower2++];
+
+            index = 0;
+            for (int i = Lower; i <= Upper; i++)
+                arr[i] = temp[index++];
+        }
+        public static void Sort(int[] arr, int Lower, int Upper)
+        {
+            if(Lower<Upper)
+            {
+                int Medium = (Upper + Lower) / 2;
+                Sort(arr, Lower, Medium);
+                Sort(arr, Medium + 1, Upper);
+                Sort(arr, Medium, Lower, Upper);
+            }
+            
+        }
+    }
     public static class RadixSort
     {
         public static void Sort(int[] arr)
@@ -208,7 +297,9 @@ namespace Alghorithms
         public static void Main(string[] args)
         {
             int[] arr = { 2, 34, 45, 3, 6, 67, 5, 76, 43, 8, 9, 1, 6 };
-            RadixSort.Sort(arr);
+
+            QuickSort.Sort(arr,0,arr.Length-1);
+            //MergeSort.Sort(arr, 0, arr.Length-1);
             foreach (int i in arr)
                 Console.Write(i + " ");
             
